@@ -18,7 +18,12 @@ def get_xbd_dir() -> Path | None:
     local = os.environ.get("XBD_DIR", "")
     if local and Path(local).exists():
         return Path(local)
-    return None  # HF Spaces: load images lazily via hf_hub_download
+    # Cloud: log in with HF token if provided
+    token = os.environ.get("HF_TOKEN")
+    if token:
+        from huggingface_hub import login
+        login(token=token, add_to_git_credential=False)
+    return None
 
 EVENT_COUNTRY = {
     "guatemala-volcano":   "Guatemala",
